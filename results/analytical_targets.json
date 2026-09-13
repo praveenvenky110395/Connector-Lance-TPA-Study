@@ -1,0 +1,57 @@
+{
+  "units": "mm-tonne-s-N-MPa",
+  "kappa_convention": "classic",
+  "geometry": {
+    "L": 8.0,
+    "b": 2.5,
+    "t": 0.8,
+    "y": 0.6,
+    "alpha_deg": 30.0,
+    "beta_deg": 45.0
+  },
+  "material": {
+    "name": "BASF Ultradur B 4300 G6 (PBT-GF30)",
+    "E": 9800.0,
+    "nu": 0.35,
+    "rho": 1.53e-09,
+    "sigma_break": 137.0,
+    "eps_break": 0.03,
+    "E_creep_1000h": 7500.0,
+    "permissible_strain_factor": 0.5
+  },
+  "stage1": {
+    "I_mm4": 0.10666666666666669,
+    "P_euler_bernoulli_N": 3.6750000000000007,
+    "P_timoshenko_N": 3.645471679396886,
+    "shear_correction_pct": 0.8100000000000002,
+    "root_stress_MPa": 110.25000000000001,
+    "root_strain_pct": 1.1250000000000002,
+    "permissible_strain_pct": 1.5,
+    "strain_utilisation_pct": 75.00000000000001,
+    "f1_Hz": 5110.431794415612,
+    "T1_ms": 0.19567818145870627,
+    "wave_speed_mm_s": 2530855.341217655,
+    "acceptance_band_N": [
+      3.5725622458089483,
+      3.7183811129848237
+    ]
+  },
+  "stage2": {
+    "mu_0.00": {
+      "W_insertion_N": 2.121762239271875,
+      "W_retention_N": 3.6750000000000003
+    },
+    "mu_0.10": {
+      "W_insertion_N": 2.641785814379191,
+      "W_retention_N": 4.491666666666667
+    },
+    "mu_0.20": {
+      "W_insertion_N": 3.229695333286571,
+      "W_retention_N": 5.512500000000001
+    },
+    "mu_0.30": {
+      "W_insertion_N": 3.899712207016849,
+      "W_retention_N": 6.824999999999999
+    }
+  }
+}
