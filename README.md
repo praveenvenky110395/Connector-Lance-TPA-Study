@@ -47,7 +47,7 @@ opinion on a question the analytical solution already answers.
 
 ## Analytical targets
 
-Computed by `scripts/analytical.py`. Nothing is hard-coded; the script re-derives every
+Computed by [`scripts/analytical.py`](scripts/analytical.py). Nothing is hard-coded; the script re-derives every
 quantity by a second independent route and raises if the two disagree.
 
 | Quantity | Value |
