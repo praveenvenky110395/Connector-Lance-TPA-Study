@@ -34,7 +34,29 @@
     "acceptance_band_N": [
       3.5725622458089483,
       3.7183811129848237
-    ]
+    ],
+    "deflected_shape_mm": {
+      "x_2.0mm": {
+        "x_over_L": 0.25,
+        "w_euler_bernoulli": 0.0515625,
+        "w_timoshenko": 0.05235343715901201
+      },
+      "x_4.0mm": {
+        "x_over_L": 0.5,
+        "w_euler_bernoulli": 0.1875,
+        "w_timoshenko": 0.188403928181728
+      },
+      "x_6.0mm": {
+        "x_over_L": 0.75,
+        "w_euler_bernoulli": 0.3796875,
+        "w_timoshenko": 0.38025245511358
+      },
+      "x_8.0mm": {
+        "x_over_L": 1.0,
+        "w_euler_bernoulli": 0.6,
+        "w_timoshenko": 0.6
+      }
+    }
   },
   "stage2": {
     "mu_0.00": {

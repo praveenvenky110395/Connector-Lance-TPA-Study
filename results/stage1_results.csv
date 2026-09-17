@@ -1,0 +1,17 @@
+# Stage 1 results, one row per run. Leave a row blank until it has been run.
+# Ramp ends 5.0 ms, analysis terminates 5.5 ms, so the last 0.5 ms is a hold.
+#
+# tip_disp_mm          control node z displacement at termination, from nodout.
+#                      Magnitude. Check this first - it must be 0.600.
+# peak_force_N         summed z reaction at the root, from spcforc, averaged
+#                      over 5.25 to 5.50 ms
+# force_at_ramp_end_N  same, averaged over 5.00 to 5.25 ms (settling check)
+# ke_over_ie_pct       glstat, max kinetic/internal energy over 1.0 to 5.0 ms
+# hg_over_ie_pct       glstat, hourglass/internal energy (ELFORM 1 only; 0 otherwise)
+case,n_thru,elform,tip_disp_mm,peak_force_N,force_at_ramp_end_N,ke_over_ie_pct,hg_over_ie_pct
+mesh_n1,1,-1,0.6,3.028461561,3.028454423,8.40E-03,0
+mesh_n2,2,-1,0.6,3.808587494,3.80961464,0.006563664,0
+mesh_n4,4,-1,0.6,3.797477589,3.796927663,0.006600556,0
+mesh_n8,8,-1,0.6,3.780868225,3.780939983,0.006618585,0
+form_elform1,4,1,0.6,3.791739721,3.791485667,0.007044695,0.069470164
+form_elform2,4,2,0.6,3.820201931,3.819782899,0.006560197,0
