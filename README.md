@@ -5,7 +5,7 @@ lance, and secondary lock (TPA) — built so that **every added physical effect 
 before the next one is introduced**.
 
 **Status: Stage 1 complete.** Analytical reference frozen, boundary conditions verified,
-six runs done, results below and in `results/`.
+six runs done, results below and in [`results/`](results/).
 
 ---
 
