@@ -1,0 +1,46 @@
+# Stage 2 results, one row per run. Written by scripts/extract_stage2.py - do
+# not edit by hand, rerun the script instead.
+#
+# tip_disp_mm           tip node z displacement at the end of the ramp, from
+#                       nodout. It is close to 0.600 but not equal to it and can
+#                       land either side: the plate face is inclined, so the
+#                       face height under the tip depends on where the tip
+#                       corner has moved to, and the corner both draws in and
+#                       rides forward as the lance bends. Recorded, not assumed.
+# W_N                   summed x reaction at the root, spcforc 'force
+#                       resultants', mean over 2.50 to 3.50 ms - the fastest
+#                       part of the stroke, where the contact is sliding. W/P is
+#                       a sliding relation and this is where it is read.
+# P_N                   summed z reaction at the root, same line, same window.
+# ratio_scatter_pct     standard deviation of the per-sample W/P over the same
+#                       window, in percent. For the report only - the comparison
+#                       uses W_N/P_N, which is the unbiased estimator.
+# W_hold_N, P_hold_N    the same two forces over the hold, 5.00 to 5.50 ms,
+#                       where the plate has stopped and the contact is stuck.
+#                       These are the fully developed end-of-stroke forces and
+#                       the frictional work is normalised on them. W/P read here
+#                       comes out 0.6 to 1.9 % low for mu > 0 and unaffected for
+#                       mu = 0, which is the stick relaxing, not the friction
+#                       law - see the note above T_SLIDE in the script.
+# ke_over_ie_pct        glstat, max kinetic/internal energy over 2.5 to 5.0 ms,
+#                       the half of the ramp where the internal energy is
+#                       developed enough for the ratio to mean something.
+# sliding_over_ie_pct   glstat, sliding interface energy / internal energy at
+#                       the end of the ramp. With friction on most of this is
+#                       real frictional work, so it is not a defect screen -
+#                       postprocess_stage2.py compares it against the closed
+#                       form instead.
+# internal_energy_Nmm   glstat, internal energy at the end of the ramp. Carried
+#                       so the sliding energy can be compared in N mm.
+# energy_ratio          glstat, total energy / initial energy at the end of the
+#                       ramp. This is the check that holds for every case.
+#
+# Compared against W/P = (tan a + mu)/(1 - mu tan a). The ratio holds no
+# stiffness, so the Stage 1 deviation from beam theory does not enter it.
+case,angle_deg,mu,tip_disp_mm,W_N,P_N,ratio_scatter_pct,W_hold_N,P_hold_N,ke_over_ie_pct,sliding_over_ie_pct,internal_energy_Nmm,energy_ratio
+a30_mu000,30,0.00,-0.6014,1.4847,2.5753,6.1,2.1519,3.7261,0.9930,1.62,1.1324,1.00000
+a30_mu010,30,0.10,-0.6008,1.8653,2.5843,6.9,2.6421,3.7085,0.9965,26.82,1.1309,1.00000
+a30_mu020,30,0.20,-0.6000,2.2648,2.5777,5.9,3.2042,3.7023,1.0029,55.49,1.1293,1.00000
+a30_mu030,30,0.30,-0.5990,2.7411,2.5836,7.3,3.8447,3.6934,1.0056,88.37,1.1273,1.00000
+a45_mu000,45,0.00,-0.6058,2.6253,2.6249,7.0,3.7302,3.7329,0.3160,1.90,1.1533,0.99999
+a45_mu020,45,0.20,-0.6033,3.9279,2.6246,5.8,5.5040,3.6904,0.3542,53.85,1.1492,1.00000
