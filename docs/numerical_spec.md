@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Version | 1.0 |
-| Status | Inputs frozen; Stage 1 decks generated, evaluation pending |
+| Status | Inputs frozen. Stages 1 and 2 evaluated. Stage 3 run once: displacement results stand, force results discarded and being re-run |
 | Unit system | mm – tonne – s – N – MPa |
 | Computed by | `scripts/analytical.py` (nothing in this document is hand-entered) |
 
@@ -473,22 +473,216 @@ under the tip depends on where the tip corner has moved to, and that corner both
 is geometry, not penetration, and it is recorded rather than corrected — the ratio
 does not depend on it.
 
-### Stage 3 — TPA
+### Stage 3 — the locking cycle
 
-TPA block 2.50 × 0.80 × 4.00 mm, seated with **0.10 mm clearance** above the undeflected
-lance. The lance can therefore lift 0.10 mm against the 0.60 mm it needs to release —
-**83 % of the required deflection is blocked.**
+**Rewritten twice, and both rewrites are recorded because the reasoning is the content.**
 
-- Case A: TPA off. Pull-out 1.5 mm at 300 mm/s.
-- Case B: TPA on. Identical in every other respect.
-- **Limiting-case regression:** with the TPA contact deactivated, the Stage 3 model must
-  reproduce Stage 2. This is the primary verification argument for Stage 3.
-- If time permits: correctly seated vs under-seated terminal, and TPA closure blocked by
-  an under-seated terminal — the position-assurance function itself.
+The original plan asked for a TPA-on and TPA-off pull-out at 300 mm/s with no reference
+beyond a limiting-case regression onto Stage 2. That does not work as written: with the
+lance blocked, a force-driven pull-out in a linear-elastic model has nothing to limit it,
+so the answer would be set by the contact penalty stiffness rather than by mechanics.
 
-This is an **investigation, not a demonstration**. The question is how the TPA changes
-the load path, not whether it improves retention. A smaller-than-expected effect, or a
-shift in failure mode, is a valid and more interesting result.
+The second attempt modelled the TPA as a rigid prop under a prismatic lance and verified it
+against the propped-cantilever closed form. Rigorous, and it produced a real result — a
+prop part-way along the lance only stiffens it, it does not block release, and at 3.0 mm
+with 0.10 mm clearance the retention force rises by just 17 %. But it is a beam exercise,
+not a connector, and it left the part out.
+
+**What is modelled now.** The lance carries an integral locking tooth: 45° retention face
+on the root side, flat crest, 30° lead-in towards the tip, protruding 0.60 mm. The
+protrusion is the lift needed to release — that is the design relation. A rigid terminal
+runs underneath with a matching 45° shoulder and a recess the tooth sits in; a rigid TPA
+sits above with a clearance. Both rigid parts take the lance's modulus, for the reason
+Stage 2 established.
+
+**The reference is Stage 1 × Stage 2**, with three named corrections:
+
+| correction | size | why |
+|---|---|---|
+| tooth stiffens the lance | +1.1 % | thicker section, but where the moment is small |
+| load on the tooth, not the tip | lever arm 6.26 mm not 8.00 mm | release condition set at the crest |
+| faces rotate with the lance | **7.3–8.0°** | the faces are on the lance now |
+
+The third is the finding. Lead-in 30° → 37.8° effective (steeper); retention 45° → 37.7°
+(shallower). They converge. The insertion-to-retention asymmetry falls from about 2.2 on
+the drawn angles to **1.30**, and it is 1.30 at every friction coefficient, because the
+correction is geometric rather than frictional. **Design recommendation: draw the retention
+face at 52.3° to end up with an effective 45°.**
+
+Each force is reported as a bracket, not a number: the contact is face to face and the
+resultant migrates as the faces slide apart. Retention at µ = 0.20 is 7.23 to 8.46 N. The
+effective angles move less than a degree across that bracket, so the finding does not
+depend on where the resultant is assumed to act.
+
+**Runs, nine of them.** `lance_only` (prescribed tip lift — must return Stage 1 plus
+1.06 %); `extract_mu000`, `extract_mu020`, `extract_mu030`; `insert_mu020` (full stroke
+through the snap, on a 30 ms ramp because the stroke is four times longer and speed is
+what the energy check sees); `extract_tpa_g010` (blocked); `extract_tpa_g085` (**not**
+blocked — 0.85 mm is above the 0.757 mm limit derived below, and the same run doubles as
+the control, since a contact that is defined but never reached has to cost exactly
+nothing); `extract_mu020_fine` (element over the tooth halved) and `extract_mu020_slow`
+(ramp doubled), which are the two sensitivity runs.
+
+The TPA pair states the design criterion as a run rather than as a sentence. The criterion
+is *not* clearance < protrusion — that was the first version of it, and the solver
+contradicted it. See **The TPA criterion the model corrected** below.
+
+Each deck is written into its own folder, `ls-dyna/stage3/stage3_<case>/`. LS-DYNA writes
+`glstat`, `spcforc`, `nodout` and `d3plot` under fixed names into the directory it is
+started in, so nine decks in one folder would overwrite each other's results. The
+extractor takes the parent folder and finds each case by folder name — exact name first,
+because `extract_mu020` is a substring of `extract_mu020_fine` and a substring match alone
+would hand the baseline the sensitivity run's output.
+
+**Mesh.** The tooth breakpoints land exactly on mesh stations, so both faces are planes
+rather than staircases. The generator reads the angles back out of the finished mesh and
+refuses to write a deck whose faces are not at the angles they were drawn at.
+
+**A deck that was card-perfect and did nothing.** The propped-cantilever decks ran to
+termination and wrote zeros — no reaction force, no internal energy, no error, no warning.
+A part-ID collision: Stage 1 numbers its tip nodal rigid body part 2 because Stage 1 has no
+second part, and that was carried into a deck where part 2 was a rigid part, so
+`*BOUNDARY_PRESCRIBED_MOTION_RIGID` pointed at something `*MAT_RIGID` had locked in all six
+directions. A nodal rigid body occupies a part ID like any other part. The audit had
+compared keyword counts against the working decks and found them consistent, which they
+were — what was wrong was what the IDs pointed at, and card counting cannot see that.
+**And a second one of the same shape.** With the locking cycle built, `extract_mu020` also
+ran to termination doing nothing — the terminal never moved, so it never touched the lance.
+`*MAT_RIGID`'s CON1 field with CMO = 1.0 is a **code, not a bitmask**:
+
+| CON1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| locks | none | x | y | z | x+y | **y+z** | z+x | x+y+z |
+
+The terminal is driven along x and needs **5**. It was written as **6**, read as "everything
+except x"; 6 locks z *and x*, so the prescribed motion had nothing left to move. Stage 2's
+plate is driven the same way and had 5 in it the whole time — the value was on screen and
+was not copied.
+
+`check_ids()` now reads the finished deck text back and refuses a part-ID collision,
+prescribed motion on the deformable part or on an undefined curve, a contact naming a part
+that does not exist, **or a rigid part driven along a direction its own material card has
+already constrained**. Each check was written after the failure it describes and tested by
+reintroducing it.
+
+**The common thread in both.** Neither failure produced an error, a warning or a zero-length
+output file. Both produced a complete, clean run full of zeros. A solver that terminates
+normally is not evidence that the model is doing anything, and neither is a deck whose cards
+are all individually correct — what has to be checked is what the fields refer to.
+
+**And a third failure, of a different kind — this one had a mechanism.** `insert_mu020`
+terminated at 10.1 ms of a 20 ms ramp on excessive element distortion, with the tooth
+crushed locally. `*CONTACT_AUTOMATIC_ONE_WAY_SURFACE_TO_SURFACE` checks slave **nodes**
+against master **segments**, and nothing else. The terminal's leading edge is a sharp rigid
+corner that travels the entire length of the tooth — and a master corner can sit inside a
+slave element face, between its nodes, completely undetected. It had been gouging since
+about 4 ms; the run only stopped once an element finally inverted, by which time the corner
+was past the crest and under the retention face.
+
+Unlike the first two, this one is a real modelling decision rather than a typo, and the fix
+is four things:
+
+| change | why |
+|---|---|
+| `*CONTACT_AUTOMATIC_SURFACE_TO_SURFACE` — two-way | the terminal's corner is now checked as a node against the lance's faces |
+| 0.15 mm × 45° chamfer on the terminal's leading edge | a real terminal has one; it turns a 90° corner into two 135° ones. Kept short and steep on purpose, so the tooth's 30° face stays the shallower surface and remains the angle the insertion force is predicted from |
+| tooth mesh refined to 0.10 mm | an undetected corner penetrates by about one element length before a node notices |
+| insertion ramp 20 → 30 ms | peak speed was 352 mm/s against Stage 2's 212; it is now 244 |
+
+Only the first is strictly necessary. The others reduce how hard the contact has to work,
+and the chamfer is there because the part has one.
+
+**Why Stage 2 never hit this.** There the inclined face was on the rigid master and the
+deformable tip rode it as a slave node on a large master face — the robust arrangement.
+Stage 3 inverts it deliberately, because on a real lance the ramp is on the lance. Putting
+the physics back where it belongs also put the contact into its fragile configuration, and
+one-way contact was no longer good enough for it.
+
+**A fourth failure, and this one is a modelling-limits result rather than a mistake in a
+card.** The two TPA runs distorted: the lance was dragged along the insertion axis and
+stretched. The cause is that **the terminal is rigid and kinematically driven, so once the
+lance is resting on the TPA there is nothing in the model able to stop the terminal.** It
+ploughs on. The blocked run had been driven 0.90 mm against a stop the lance reaches at
+0.079 mm — eleven times past it.
+
+That is the same objection that killed the very first Stage 3 plan, reappearing in a
+different form. A prescribed displacement through a blocked path delivers unbounded force
+just as a prescribed force through a blocked path delivers unbounded travel. A blocked run
+is now driven to the stop plus 0.05 mm and no further. The overrun is not padding: it is
+where the force rises steeply and the load path moves out of the lance's bending and into
+the TPA, which is the thing the stage set out to measure. Past it the linear-elastic lance
+has fractured and the model is describing a part that no longer exists.
+
+#### The TPA criterion the model corrected
+
+**And the FE model corrected the design criterion.** The control run was meant to be a TPA
+fitted and useless — 0.65 mm of clearance against a 0.60 mm tooth protrusion, so the lance
+should release with the TPA in place. It blocked. The one-line criterion *clearance <
+protrusion* compares the clearance against how far the **tooth** must move, and ignores
+that the TPA sits somewhere else on a beam that bends. Under the extraction load the lance
+tip lifts **1.26 times** the crest, so a TPA reaching the tip stops the lance at 0.757 mm
+of clearance, not 0.600.
+
+| TPA reaches | blocks below |
+|---|---|
+| the crest | 0.600 mm |
+| the lance tip | **0.757 mm** |
+
+Corrected criterion: **the clearance must be compared against the lift at the most-lifted
+station the TPA actually covers.** That is a statement about where the TPA is placed, not
+about the tooth — and putting it over the tip buys 26 % more clearance for the same
+function, which is a design lever the first version hid. The control run is now 0.85 mm,
+and the generator refuses any TPA clearance within 10 % of the blocking limit, because a
+run that close proves neither outcome.
+
+**A fifth failure, and the only one that produced numbers rather than a crash.** The
+first complete set of nine ran cleanly by every screen this document declares: energy
+balance 0.99983 to 1.00000, hourglass exactly zero, all nine finished, the TPA control
+matched the baseline to every decimal printed. Every force number in it was still void.
+
+All output was written every 10 µs. The contact rings far above 50 kHz, so the force
+history aliased. Aliased data cannot be filtered clean, because the folded content is
+already inside the passband.
+
+Two independent signatures identified it, and both belong in the screening list for
+any explicit contact result:
+
+1. **The answer moved with the filter.** The effective angle read 41.5° through a
+   narrow moving average and 29.0° through a wide one, a 12° swing, while the same
+   angle taken from the deflected shape moved 0.9° across the same range. A quantity
+   that depends on the post-processing is not a measurement.
+2. **The apparent frequency moved with the sample rate.** 44 kHz in one run, 16 kHz in
+   the same model run at half the loading rate. A structural mode cannot do that. Only
+   an alias can.
+
+**Corrective action.** `*DATABASE_SPCFORC` and `*DATABASE_RCFORC` are written at 1 MHz;
+`*DATABASE_NODOUT`, `*DATABASE_GLSTAT` and the rest stay at the previous rate, because
+displacements are the double integral of the acceleration and the ring is small in
+them. Forces are low-pass filtered with the SAE J211 zero-phase Butterworth at 10 kHz,
+above both the loading content and the 5.1 kHz first bending mode.
+
+**Two acceptance gates are now applied to every run before a force may be quoted**, and
+both thresholds are fixed in the script rather than chosen after seeing the data:
+
+| Gate | Threshold | Rationale |
+|---|---|---|
+| Samples per cycle of the ring | ≥ 8, where the ripple exceeds 5 % of the level | below this a low-pass has no usable transition band under Nyquist |
+| Movement of the answer across cutoffs of 3, 5, 10 and 20 kHz | ≤ 1° | more than this and the filter is answering, not the model |
+
+A run that fails either gate has its force columns withheld. Its displacement
+measurements are unaffected and are still reported.
+
+**Two further errors in the same set.** The regression run `lance_only` was compared
+against beam theory and read +3.8 %; the correct baseline is Stage 1's own FE result at
+the same mesh — Stage 1 measured and recorded a 4.17 % model-form gap to Timoshenko, and
+charging Stage 3 for it counts it twice. Against Stage 1 FE × 1.0106 for the tooth, the
+run lands at −0.34 %. And `extract_mu020_fine` was read at the wrong node locations: one
+node map was written for all nine cases, and that case builds its own mesh. Its forces
+were unaffected because the root nodes keep their IDs, which is what made it silent.
+
+**Verification loads, not service loads.** The Section 7 limitation applies to this stage
+as to the others: the linear-elastic model bounds the forces from above and says nothing
+about the load at which a real PBT-GF30 lance would fail.
 
 ---
 
@@ -513,7 +707,11 @@ shift in failure mode, is a valid and more interesting result.
 | Hourglass / internal energy | all explicit | < 10 % |
 | Total energy | all explicit | flat — no contact energy injection |
 | Contact-region mesh | Stage 2 | force not a mesh artefact |
-| **Limiting case** | Stage 3 | TPA deactivated reproduces Stage 2 |
+| **Limiting case** | Stage 3 | `lance_only` reproduces Stage 1 plus the 1.1 % the tooth adds |
+| Frictionless geometry | Stage 3 | W/P at µ = 0 returns tan of the *effective* angle |
+| Retention and insertion | Stage 3 | inside the Stage 1 × Stage 2 bracket |
+| Rotation correction | Stage 3 | measured face rotation matches the beam solution |
+| TPA criterion | Stage 3 | blocks at 0.10 mm clearance, does not at 0.65 mm |
 
 **Outcome of the closed-form criterion, recorded rather than revised.** The ±2 % band was
 set against the Timoshenko value before any model was run, and the finest mesh sits at
