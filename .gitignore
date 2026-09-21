@@ -1,27 +1,39 @@
-# =============================================================================
-# Solver output — NEVER commit these. A single d3plot set or .odb can be
-# hundreds of MB and will permanently bloat the repository history. Commit the
-# INPUT DECKS, the extracted ASCII results, and the figures.
-# =============================================================================
+# Solver output is not committed. The input decks are, and so are the CSVs and
+# figures the extract and postprocess scripts write into results/. Everything
+# below comes back by running a deck.
+#
+# This matters more than usual here: Stage 3 writes spcforc every 0.5 us, which
+# is 30 MB per extraction run and about 90 MB for the insertion run.
 
-# --- LS-DYNA binary and scratch ---
+# LS-DYNA binary and scratch
 d3plot*
 d3dump*
 d3full*
+d3thdt*
 d3hsp
 d3kil
+messag
+status.out
 dyna.str
 runrsf
 adptmp
 kill_by_pid
+bg_switch
+load_profile*
+cont_profile*
+lsrun.out.txt
 mes0*
 core.*
 *.binout
 binout*
 scr/
 
-# --- LS-DYNA ASCII output: keep the ones we post-process, ignore the rest ---
-# (glstat, matsum, rcforc, bndout, spcforc are DELIBERATELY tracked - see below)
+# LS-DYNA ASCII output - read by the extract scripts, not committed
+glstat
+matsum
+spcforc
+rcforc
+bndout
 nodout
 elout
 secforc
@@ -32,71 +44,17 @@ jntforc
 sbtout
 ncforc
 
-# --- Abaqus ---
-*.odb
-*.lck
-*.sta
-*.msg
-*.dat
-*.com
-*.prt
-*.sim
-*.stt
-*.mdl
-*.res
-*.abq
-*.pac
-*.sel
-*.023
-*.ipm
-*.log
-abaqus_v6.env
-explicit_dp.env
-standard_dp.env
-
-# --- ANSA / META ---
-*.ansa_bak
-*.metadb
-ANSA_TRANSIENT*
-META_TRANSIENT*
-
-# --- CAD / mesh intermediates ---
-*.stp.bak
-*.step.bak
-*.prt.*
-*.asm.*
-
-# --- Python ---
+# Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 .ipynb_checkpoints/
-*.egg-info/
 
-# --- Editors / OS ---
+# Editors / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 *~
 *.swp
-
-# =============================================================================
-# Explicitly TRACKED despite the patterns above — these are the evidence trail:
-#   ls-dyna/**/*.k              input decks
-#   abaqus/**/*.inp             input decks
-#   results/**/glstat           energy balance
-#   results/**/matsum           part energies
-#   results/**/rcforc           contact forces
-#   results/**/bndout           prescribed-motion reactions
-#   results/**/spcforc          constraint reactions
-#   results/**/*.json  *.csv    extracted data
-#   results/figures/*.png       figures
-# Force-add with:  git add -f <path>
-# =============================================================================
-!ls-dyna/**/*.k
-!abaqus/**/*.inp
-!results/**/*.json
-!results/**/*.csv
-!results/figures/*.png

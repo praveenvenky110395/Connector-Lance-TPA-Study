@@ -1,0 +1,52 @@
+# The force route against the shape route, station by station.
+# Stations are placed by the lance's LIFT, not the terminal's
+# travel, because the lift is what says which surface is in
+# contact. On insertion the contact crosses three of them - the
+# terminal's nose chamfer, the 30 deg lead-in, the flat crest -
+# and the wedge relation describes only one.
+#
+# W_over_P is the ratio of the MEAN axial to the MEAN transverse
+# root reaction over a window, not a point reading. from_shape is
+# the drawn angle and the lance rotation over the same window.
+# The two share no data. gap_deg is the whole error bar.
+case,frac_of_lift,lift_mm,travel_mm,W_over_P,angle_from_force_deg,angle_from_shape_deg,gap_deg
+extract_mu000,0.35,0.2101,0.2178,0.9385,43.18,42.38,+0.81
+extract_mu000,0.50,0.3001,0.3159,0.9704,44.14,41.24,+2.90
+extract_mu000,0.65,0.3900,0.4233,1.0558,46.56,40.05,+6.50
+extract_mu000,0.80,0.4803,0.5278,1.1170,48.16,38.96,+9.20
+extract_mu000,0.90,0.5400,0.6045,1.0297,45.84,38.22,+7.62
+extract_mu020,0.35,0.2101,0.2180,1.3737,42.64,42.35,+0.29
+extract_mu020,0.50,0.3002,0.3161,1.3270,41.69,41.20,+0.49
+extract_mu020,0.65,0.3902,0.4246,1.2629,40.32,39.99,+0.32
+extract_mu020,0.80,0.4802,0.5351,1.2265,39.50,38.83,+0.67
+extract_mu020,0.90,0.5401,0.6070,1.2000,38.88,38.12,+0.76
+extract_mu030,0.35,0.2101,0.2183,1.6973,42.80,42.33,+0.47
+extract_mu030,0.50,0.3002,0.3179,1.6373,41.89,41.15,+0.74
+extract_mu030,0.65,0.3900,0.4218,1.5659,40.74,39.99,+0.75
+extract_mu030,0.80,0.4802,0.5378,1.4823,39.30,38.76,+0.53
+extract_mu030,0.90,0.5401,0.6081,1.4226,38.20,38.07,+0.12
+insert_mu020,0.35,0.2100,0.6636,0.9976,33.62,32.78,+0.84
+insert_mu020,0.50,0.3000,0.8065,1.0589,35.33,33.65,+1.67
+insert_mu020,0.65,0.3899,0.9529,1.0463,34.99,34.80,+0.19
+insert_mu020,0.80,0.4799,1.0791,1.0620,35.41,35.82,-0.41
+insert_mu020,0.90,0.5400,1.1650,1.0746,35.75,36.51,-0.76
+extract_tpa_g010,0.35,0.0275,0.0360,1.4837,44.71,44.66,+0.05
+extract_tpa_g010,0.50,0.0394,0.0473,1.4742,44.54,44.51,+0.03
+extract_tpa_g010,0.65,0.0511,0.0588,1.4633,44.34,44.36,-0.02
+extract_tpa_g010,0.80,0.0629,0.0702,1.4580,44.24,44.21,+0.03
+extract_tpa_g010,0.90,0.0708,0.0778,1.4551,44.19,44.11,+0.08
+extract_tpa_g085,0.35,0.2101,0.2180,1.3737,42.64,42.35,+0.29
+extract_tpa_g085,0.50,0.3002,0.3161,1.3270,41.69,41.20,+0.49
+extract_tpa_g085,0.65,0.3902,0.4246,1.2629,40.32,39.99,+0.32
+extract_tpa_g085,0.80,0.4802,0.5351,1.2265,39.50,38.83,+0.67
+extract_tpa_g085,0.90,0.5401,0.6070,1.2000,38.88,38.12,+0.76
+extract_mu020_fine,0.35,0.2102,0.2203,1.4086,43.32,42.32,+0.99
+extract_mu020_fine,0.50,0.3001,0.3210,1.4256,43.64,41.15,+2.49
+extract_mu020_fine,0.65,0.3901,0.4181,1.3728,42.62,40.07,+2.55
+extract_mu020_fine,0.80,0.4801,0.5351,1.2824,40.74,38.84,+1.90
+extract_mu020_fine,0.90,0.5400,0.6173,1.2392,39.79,38.05,+1.74
+extract_mu020_slow,0.35,0.2100,0.2184,1.3926,43.01,42.34,+0.67
+extract_mu020_slow,0.50,0.3000,0.3180,1.3255,41.66,41.18,+0.48
+extract_mu020_slow,0.65,0.3900,0.4236,1.2444,39.90,40.01,-0.11
+extract_mu020_slow,0.80,0.4800,0.5338,1.1914,38.68,38.86,-0.18
+extract_mu020_slow,0.90,0.5400,0.6078,1.1909,38.67,38.11,+0.56

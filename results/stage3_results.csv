@@ -1,0 +1,51 @@
+# Stage 3 results, one row per run. Written by scripts/extract_stage3.py - do
+# not edit by hand, rerun the script instead.
+#
+# The gate thresholds that were in force when this file was written are on the
+# limits line below, and the post-processor reads them from there rather than
+# importing them. That way the gates reported are the ones actually applied,
+# even if the script has been edited since, and the two scripts do not share
+# module state - which is how a stale import in a notebook kernel managed to
+# pair a new post-processor with an old extractor.
+# limits: min_spc=8.0 min_ripple_pct=5.0 gap_limit=1.5 window_spread_limit=1.5 windows_us=50,100,150,250,400
+#
+# Forces are low-pass filtered. The raw contact force rings far above the
+# frequencies the loading contains, and the first set of runs wrote it too
+# slowly to resolve, so the whole set had to be discarded. Two columns say
+# whether that is fixed here:
+#
+# samples_per_cycle     output samples per cycle of the ringing. Below 8 the
+#                       signal is aliased and every force column is void.
+# angle_gap_max_deg     worst disagreement between the force route and the shape
+#                       route, over the stations in stage3_stations.csv. The two
+#                       share no data, so this is the real error bar.
+# window_spread_deg     how far the measured angle moves across averaging windows
+#                       of 50 to 400 us. If it moves, the window is answering.
+#
+# W_N                   summed AXIAL root reaction, filtered, read at release.
+#                       This is the pull-out force: the TPA is frictionless on
+#                       a flat face so it puts no x-force into the lance, which
+#                       leaves the root x-reaction equal to the terminal load.
+# P_N                   summed transverse root reaction at the same instant.
+# W_raw_peak_N          the unfiltered maximum, kept so the size of the ring
+#                       is on record rather than hidden by the filter.
+# W_over_P              the Stage 2 wedge ratio, measured.
+# angle_from_force_deg  that ratio inverted for the face angle. At mu = 0 it is
+#                       atan(W/P) and contains no assumption at all.
+# angle_from_shape_deg  the same angle from the deflected shape - drawn angle
+#                       minus the lance rotation at release, measured from two
+#                       spine nodes. Shares no data with the column above and
+#                       does not depend on the filter.
+# released              did the crest rise by the full protrusion.
+# W_plateau_N           insertion only. The force while the lance rides the
+#                       lead-in. The raw maximum on that run is first touch.
+case,mu,tpa_gap_mm,stroke_mm,tooth_h_mm,t_ramp_ms,force_dt_us,samples_per_cycle,ringing_kHz,ripple_pct,cutoff_Hz,W_N,P_N,W_raw_peak_N,ring_over_mean,W_over_P,angle_from_force_deg,angle_gap_max_deg,angle_gap_mean_deg,window_spread_deg,angle_from_shape_deg,rotation_at_release_deg,rotation_at_read_deg,read_at,read_travel_mm,crest_lift_mm,tip_lift_mm,released,release_travel_mm,W_plateau_N,tpa_engage_travel_mm,W_at_tpa_engage_N,ke_over_ie_pct,hourglass_over_ie_pct,sliding_over_ie_pct,internal_energy_Nmm,energy_ratio
+lance_only,0.00,,,0.100,5.0,0.500,5.8,347.5,0.06,10000,0.0003,3.8249,3.8260,,,,,,,,,,at the end of the ramp,0.0000,,0.6024,,,,,,0.0685,0.0000,0.00,1.1442,1.00000
+extract_mu000,0.00,,+1.200,0.100,5.0,0.500,11.8,169.6,60.35,10000,5.4437,5.2869,17.1330,3.15,1.0297,45.84,9.20,5.41,1.95,37.33,7.67,6.77,"windowed, 150 us, 5 stations",0.6045,0.5400,0.6841,yes,0.6907,,,,4.0043,0.0000,3.10,0.7861,0.99993
+extract_mu020,0.20,,+1.200,0.100,5.0,0.500,14.8,134.7,63.21,10000,6.0953,5.0794,17.4371,2.86,1.2000,38.88,0.76,0.51,0.26,37.29,7.71,7.00,"windowed, 150 us, 5 stations",0.6070,0.5404,0.6899,yes,0.6918,,,,4.0888,0.0000,45.90,0.7832,0.99997
+extract_mu030,0.30,,+1.200,0.100,5.0,0.500,16.2,123.7,59.38,10000,7.0534,4.9580,20.8197,2.95,1.4226,38.20,0.75,0.52,0.99,37.22,7.78,6.95,"windowed, 150 us, 5 stations",0.6081,0.5402,0.6885,yes,0.6932,,,,4.3954,0.0000,68.73,0.8033,0.99998
+insert_mu020,0.20,,-3.899,0.100,30.0,0.500,13.0,154.4,66.60,10000,6.2963,5.8593,17.4404,2.77,1.0746,35.75,1.67,0.77,1.95,37.35,7.35,6.16,"windowed, 150 us, 5 stations",1.1650,0.5400,0.6703,yes,1.4727,3.3982,,,3.2077,0.0000,70.77,0.8452,0.99983
+extract_tpa_g010,0.20,0.100,+0.121,0.100,5.0,0.500,19.3,103.7,0.83,10000,1.1040,0.7587,26.2177,23.75,1.4551,44.19,0.08,0.04,0.07,,,0.89,"windowed, 150 us, 5 stations",0.0778,0.0708,0.0900,no,,,0.0853,1.2445,,0.0000,46.44,0.0136,1.00000
+extract_tpa_g085,0.20,0.850,+1.200,0.100,5.0,0.500,14.8,134.7,63.21,10000,6.0953,5.0794,17.4371,2.86,1.2000,38.88,0.76,0.51,0.26,37.29,7.71,7.00,"windowed, 150 us, 5 stations",0.6070,0.5404,0.6899,yes,0.6918,,,,4.0888,0.0000,45.90,0.7832,0.99997
+extract_mu020_fine,0.20,,+1.200,0.050,5.0,0.500,12.2,164.1,72.25,10000,6.3038,5.0871,17.8407,2.83,1.2392,39.79,2.55,1.94,1.04,37.27,7.73,6.84,"windowed, 150 us, 5 stations",0.6173,0.5400,0.6853,yes,0.7000,,,,4.9731,0.0000,43.58,0.7959,0.99994
+extract_mu020_slow,0.20,,+1.200,0.100,10.0,0.500,14.9,134.2,54.62,10000,6.0544,5.0838,12.8784,2.13,1.1909,38.67,0.67,0.40,0.55,37.33,7.67,6.91,"windowed, 150 us, 5 stations",0.6078,0.5400,0.6875,yes,0.6944,,,,1.4821,0.0000,44.62,0.7900,0.99994

@@ -561,13 +561,18 @@ def write_deck(lance, terminal, tpa, name, mu, direction, path, opts=None):
     # integral of the acceleration and the ring barely shows in it. That is
     # also why the rotation measurement survived the first set intact.
     state = 4.0e-5 if insert else 1.0e-5
-    force = 0.5e-6
+    force = 5.0e-7
     # One rate for the forces on every run, insertion included. It was first
-    # set to 2e-6 there, on the reasoning that the insertion run is six times
+    # set slower there, on the reasoning that the insertion run is six times
     # longer and loaded six times slower. The resolution check in the extractor
     # rejected it: the ring is a property of the contact and the structure, not
     # of the loading rate, so halving the sample rate halves the resolution and
-    # nothing else. The insertion spcforc is about 45 MB as a result.
+    # nothing else.
+    #
+    # 0.5 us, not 1 us. At 1 us the ring came back at 9 to 12 samples per cycle
+    # on some runs and 7 on others, which is at the edge; at 0.5 us it is 12 to
+    # 19 everywhere. That costs about 30 MB per extraction run and 90 MB for
+    # the insertion one, which is a fair price for not having to wonder.
 
     parts = [PID_LANCE]
     lines = [
@@ -848,7 +853,11 @@ def main():
                 "spine_nodes": {str(n): c[n][0] for n in lc["spine"]}}
 
     index = {"control_node": lance["control"], "L": L, "protrusion": G.y,
-             "tooth_stations": list(tooth_stations(G)), "cases": {}}
+             "tooth_stations": list(tooth_stations(G)),
+             # The extractor needs this to know where the terminal's nose stops
+             # carrying the contact and the tooth's own lead-in takes over.
+             "chamfer_depth": CHAMFER_DEPTH,
+             "cases": {}}
     index.update(node_map(lance))
 
     print(f"{'case':>20} {'mu':>5} {'tpa gap':>8} {'stroke':>8} {'tooth h':>8} "

@@ -7,23 +7,16 @@ stages already verified - the lance stiffness from Stage 1, the wedge relation
 from Stage 2 - and its job is to say what the idealisations cost once the
 feature becomes the part.
 
-Four comparisons, in the order they should be read:
+Sections, in the order they print:
 
-  1  Frictionless geometry.  At mu = 0 the wedge relation has no friction term,
-     so W/P is the tangent of the face angle and nothing else. That one number
-     measures the effective angle with no assumption in it whatsoever, and it
-     is the cleanest test in the stage.
-
-  2  The rotation, two ways.  The effective angle from the force ratio, against
-     the drawn angle minus the lance's measured rotation. The two share no data
-     - one is forces at the root, the other is the deflected shape - so if they
-     agree the finding is not an artefact of either measurement.
-
-  3  Insertion against retention.  The asymmetry the 30/45 pair exists to
-     produce, as drawn and as it comes out.
-
-  4  The TPA.  Whether the terminal released, when the lance met the TPA, and
-     what the load did afterwards.
+  0  Whether each run's force output may be quoted at all, against the three
+     gates recorded in the results file.
+  1  Regression - lance_only against Stage 1's FE result times the tooth.
+  2  The effective angle at release from the shape, and the force route against
+     the shape route station by station.
+  3  Insertion against retention, and the asymmetry where both forces pass.
+  4  The TPA - blocked or not, and the control run.
+  5  Sensitivity - the fine-mesh and slow-ramp runs against the baseline.
 """
 
 import csv
@@ -123,11 +116,13 @@ def force_is_usable(r):
     """
     Whether this run's force columns may be quoted at all.
 
-    Three gates, all set before the runs: the output has to resolve the ring,
-    the answer must not move with the averaging window, and the two independent
-    routes to the angle must agree. A run that fails any of them still
-    contributes its displacement measurements, which do not touch the force
-    output in any way.
+    Three gates: the output has to resolve the ring, the answer must not move
+    with the averaging window, and the two independent routes to the angle must
+    agree. The first was set before any run it was applied to. The other two
+    were set when the windowed estimator was introduced, after a first look at
+    the 0.5 us data, and have not been changed since. A run that fails any of
+    them still contributes its displacement measurements, which do not touch
+    the force output in any way.
     """
     lim = read_limits()
     spc = r.get("samples_per_cycle", float("nan"))
@@ -177,7 +172,8 @@ def plot_cycle(rows, g, m):
                                   gridspec_kw={"width_ratios": [2, 1]})
     colours = {"extract_mu000": "#5a646d", "extract_mu020": "#9d4c19",
                "extract_mu030": "#a03c3c", "extract_tpa_g085": "#2f6f6a",
-               "extract_tpa_g010": "#7a5aa0", "insert_mu020": "#3c6ea0"}
+               "extract_tpa_g010": "#7a5aa0", "insert_mu020": "#3c6ea0",
+               "extract_mu020_fine": "#c08a2a", "extract_mu020_slow": "#6b8e23"}
     for r in rows:
         pts = sorted(series.get(r["case"], []))
         if not pts:

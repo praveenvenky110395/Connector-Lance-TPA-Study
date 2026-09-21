@@ -14,7 +14,7 @@ took three output rates and two corrections to the estimator, written up under
 Stage 2 matches the closed-form wedge relation to within 0.41 % across both ramp angles
 and a friction sweep to µ = 0.30. Stage 3 predicted, from those two stages alone and
 before any deck was written, that the lance's rotation would collapse the designed
-30°/45° asymmetry — and then measured it.
+30°/45° asymmetry — and then measured the rotation behind it on both faces.
 
 ---
 
@@ -349,7 +349,8 @@ Stage 2 deliberately put the wedge face on the rigid body so the contact normal 
 rotate. On a real lance the face is on the lance, and it rotates with it — so here that is
 measured instead of avoided.
 
-At release the lance has rotated **7.3°** at the retention face and **7.8°** at the lead-in.
+The closed form puts the rotation at release at **7.3°** at the retention face and **7.8°**
+at the lead-in.
 The lead-in runs uphill towards the tip and the retention face runs downhill towards the
 root, so one rotation tilts them in opposite senses:
 
@@ -375,7 +376,8 @@ needs Stage 1 for the rotation and Stage 2 for what an angle does to a force, wh
 the stages were built in that order.
 
 **Design recommendation, and it is one line: draw the retention face at 52.3° to end up
-with an effective 45°.** The 7.3° has to be paid for somewhere.
+with an effective 45°** — or 52.7° on the rotation the FE model actually measured (see
+[Stage 3 results](#stage-3-results)). The 7.3° has to be paid for somewhere.
 
 The contact is face to face and the resultant migrates as the faces slide apart, so each
 rotated force is reported as a bracket rather than a number — retention at µ = 0.20 is
@@ -521,14 +523,19 @@ retention face, against a value written into [`analytical.py`](scripts/analytica
 | `extract_mu020_fine` | 45° | 7.73° | 37.27° | 37.73° |
 | `extract_mu020_slow` | 45° | 7.67° | 37.33° | 37.73° |
 
-**The two faces meet at 37.3°.** A 45° face and a 30° face, one shallowing and the other
-steepening by the same 7.7°, converge on the same effective angle — which is the whole
+**The two faces meet at 37.3°.** A 45° face and a 30° face, one shallowing by 7.7° and
+the other steepening by 7.35°, converge on the same effective angle — which is the whole
 Stage 3 finding, and it is visible here as a measurement rather than a prediction. The
 spread across all six runs is **0.13°**; the offset from the prediction is 0.4 to 0.5°,
 about 1.2 %.
 
-Release travel is 0.6907 to 0.7000 mm across every variant against 0.600 mm for a rigid
-45° face — the rotation showing up as pure geometry, with no force in the measurement.
+That is the error on the angle. The rotation itself is further out: 7.67–7.78° at the
+retention face against 7.27° from the closed form, 6 % high, and 7.35° at the lead-in
+against 7.78°, 5.5 % low. The two errors have opposite signs and both push the effective
+angle below the prediction.
+
+Release travel is 0.6907 to 0.7000 mm across every extraction variant against 0.600 mm
+for a rigid 45° face — the rotation showing up as pure geometry, with no force in the measurement.
 
 Changing the mesh moves it 0.02°. Halving the loading rate moves it 0.04°. Neither the
 discretisation nor the rate is setting this result.
@@ -574,8 +581,8 @@ the stroke, each compared against the rotation over the same window:
 
 Five of the eight are quoted. Force against shape under 0.8° at every station on all five,
 and the two routes share no data — one is root reactions, the other two node
-displacements. They track the angle sweep together from 42.6° early in the lift down to
-38.1° at the last station.
+displacements. They track the angle sweep together, the shape route going from 42.3° at
+the first station to 38.1° at the last.
 
 **The blocked run is the calibration point, and it is the best measurement in the study.**
 Its stroke is 0.12 mm, so the contact loads slowly and the lance barely rings — ripple
@@ -584,10 +591,11 @@ unrotated 45° face has to read 45°. It reads **44.2–44.7°, with the two rou
 0.08° at every station**. That is the one run in the set whose answer was known in advance,
 and it validates the estimator rather than the finding.
 
-**`insert_mu020` misses by a whisker and stays withheld.** Placing the stations by lift
-took it from 21.6° to 1.67° worst and 0.77° mean; four of its five stations are inside
-1°, and the fifth is 1.67° against a 1.5° gate. The gate was set before the runs and is
-not being moved to admit it.
+**`insert_mu020` misses two gates narrowly and stays withheld.** Placing the stations by
+lift took it from 21.6° to 1.67° worst and 0.77° mean; four of its five stations are
+inside 1°, and the other — the second, at 0.30 mm of lift, not far past the 0.15 mm nose
+chamfer — is 1.67° against a 1.5° gate. Its window spread is 1.95° against the same
+1.5°. The gates are not being moved to admit it.
 
 **`extract_mu000` does not converge**, and that is worth saying plainly because it was
 billed as the cleanest test in the stage: at µ = 0 the wedge relation has no friction
@@ -631,7 +639,7 @@ measurement could not see.
 
 ### What the extractor now does about it
 
-Three gates, thresholds fixed in the script rather than chosen after seeing the data:
+Three gates, with the thresholds fixed in the script:
 
 | Gate | Threshold | What it catches |
 |---|---|---|
@@ -639,8 +647,10 @@ Three gates, thresholds fixed in the script rather than chosen after seeing the 
 | Movement across averaging windows of 50–400 µs | ≤ 1.5° | the window answering instead of the model |
 | Force route against shape route, worst station | ≤ 1.5° | everything else |
 
-A run failing any of them has its force columns withheld and its displacement results
-reported unchanged. The failure mode here was silent three times over; the fix is that
+The first threshold was set before any run it was applied to. The other two were set
+when the windowed estimator was introduced, after a first look at the 0.5 µs data, and
+have not moved since. A run failing any of them has its force columns withheld and its
+displacement results reported unchanged. The failure mode here was silent three times over; the fix is that
 something now looks for it.
 
 ### Two smaller errors in the same sets
@@ -670,10 +680,10 @@ and the full limitations section: **[`docs/numerical_spec.md`](docs/numerical_sp
 
 ---
 
-## Principal limitation — stated up front
+## Principal limitation
 
-**The linear-elastic Stage 1 model is a solver-verification model, not a validated
-prediction of a physical retention force.**
+**The linear-elastic model used in all three stages is a solver-verification model, not a
+validated prediction of a physical retention force.**
 
 The datasheet implies a secant modulus at break of 4,567 MPa against a 9,800 MPa initial
 tangent — the stress–strain curve softens by roughly 53 %. At the design strain of 1.125 %
@@ -703,20 +713,25 @@ This work is **verified, not validated**. Validation requires measurement.
 │   ├── extract_stage2.py        reads the run folders, fills stage2_results.csv
 │   ├── postprocess_stage2.py    W/P against the wedge relation, friction figure
 │   ├── make_stage3_models.py    writes the nine Stage 3 decks, one folder each
-│   ├── extract_stage3.py        reads the run folders, fills stage3_results.csv
-│   └── postprocess_stage3.py    effective angle, asymmetry, TPA, sensitivity
+│   ├── extract_stage3.py        reads the run folders, fills the Stage 3 CSVs
+│   └── postprocess_stage3.py    gates, effective angle, TPA, sensitivity, figure
 ├── ls-dyna/
 │   ├── stage1/                  four mesh levels, two extra formulations
 │   ├── stage2/                  two ramp angles, friction sweep
 │   └── stage3/                  locking cycle: insertion, extraction, TPA
 │       ├── RUNNING.md           how to run the nine and what each one is for
 │       ├── run_all.bat          runs every deck in its own folder
+│       ├── run_all.sh
 │       └── stage3_<case>/       one folder per deck, output stays separated
 └── results/
     ├── analytical_targets.json  machine-readable targets
-    ├── stage1_results.csv       filled in from the runs
+    ├── stage1_results.csv
     ├── stage2_results.csv
+    ├── stage2_ratio_history.csv
     ├── stage3_model.json        tooth stations, node coordinates, per-case spec
+    ├── stage3_results.csv       one row per run, with the gate columns
+    ├── stage3_stations.csv      force route against shape route, station by station
+    ├── stage3_curve_history.csv
     └── figures/
 ```
 

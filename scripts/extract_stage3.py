@@ -86,12 +86,10 @@ T_RAMP, T_END = 5.0e-3, 5.5e-3
 T_RAMP_INSERT, T_END_INSERT = 30.0e-3, 31.0e-3
 TOL = 1.0e-6
 
-# Reporting cutoff, and the three others the answer is repeated at. The band
-# that matters is set by the loading: a 5 ms quintic ramp puts essentially
-# nothing above a few hundred Hz, and the lance's first bending mode is
-# 5.1 kHz. A 10 kHz cutoff keeps both and removes the contact ring above them.
-# The sweep is what makes the choice defensible - if the answer moves with the
-# cutoff, the cutoff is answering.
+# One low-pass pass before the windowed average, to take the contact ring out.
+# 10 kHz keeps the loading and the lance's 5.1 kHz first bending mode and sits
+# a decade below the ring. It is not the measurement - the windowed ratio below
+# is - and window_spread_deg is what says whether the answer depends on it.
 CUTOFF_HZ = 10.0e3
 MIN_SAMPLES_PER_CYCLE = 8.0       # below this the force output is not resolved
 MIN_RIPPLE = 0.05                 # ...but only if the ripple is worth resolving
@@ -740,8 +738,8 @@ window_spread_limit={wspread} windows_us={windows}
 #
 # Forces are low-pass filtered. The raw contact force rings far above the
 # frequencies the loading contains, and the first set of runs wrote it too
-# slowly to resolve, so the whole set had to be discarded. Two columns say
-# whether that is fixed here:
+# slowly to resolve, so the whole set had to be discarded. Three columns say
+# whether the force here can be used:
 #
 # samples_per_cycle     output samples per cycle of the ringing. Below 8 the
 #                       signal is aliased and every force column is void.
@@ -751,7 +749,8 @@ window_spread_limit={wspread} windows_us={windows}
 # window_spread_deg     how far the measured angle moves across averaging windows
 #                       of 50 to 400 us. If it moves, the window is answering.
 #
-# W_N                   summed AXIAL root reaction, filtered, read at release.
+# W_N                   summed AXIAL root reaction, filtered, averaged over the
+#                       window at the last station (0.90 of the lift).
 #                       This is the pull-out force: the TPA is frictionless on
 #                       a flat face so it puts no x-force into the lance, which
 #                       leaves the root x-reaction equal to the terminal load.
@@ -761,10 +760,11 @@ window_spread_limit={wspread} windows_us={windows}
 # W_over_P              the Stage 2 wedge ratio, measured.
 # angle_from_force_deg  that ratio inverted for the face angle. At mu = 0 it is
 #                       atan(W/P) and contains no assumption at all.
-# angle_from_shape_deg  the same angle from the deflected shape - drawn angle
-#                       minus the lance rotation at release, measured from two
-#                       spine nodes. Shares no data with the column above and
-#                       does not depend on the filter.
+# angle_from_shape_deg  the same angle from the deflected shape - the drawn angle
+#                       and the lance rotation at release, measured from two
+#                       spine nodes: minus on the retention face, plus on the
+#                       lead-in. Shares no data with the column above and does
+#                       not depend on the filter.
 # released              did the crest rise by the full protrusion.
 # W_plateau_N           insertion only. The force while the lance rides the
 #                       lead-in. The raw maximum on that run is first touch.

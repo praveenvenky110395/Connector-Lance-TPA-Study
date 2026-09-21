@@ -8,6 +8,7 @@
     6.960769515458674,
     8.0
   ],
+  "chamfer_depth": 0.15,
   "cases": {
     "lance_only": {
       "mu": 0.0,

@@ -59,21 +59,191 @@
     }
   },
   "stage2": {
-    "mu_0.00": {
-      "W_insertion_N": 2.121762239271875,
-      "W_retention_N": 3.6750000000000003
+    "angles_deg": {
+      "insertion": 30.0,
+      "retention": 45.0
     },
-    "mu_0.10": {
-      "W_insertion_N": 2.641785814379191,
-      "W_retention_N": 4.491666666666667
+    "plate_travel_mm": {
+      "a30": 1.0392304845413265,
+      "a45": 0.6000000000000001
     },
-    "mu_0.20": {
-      "W_insertion_N": 3.229695333286571,
-      "W_retention_N": 5.512500000000001
+    "wedge_ratio": {
+      "a30": {
+        "mu_0.00": 0.5773502691896257,
+        "mu_0.10": 0.7188532828242695,
+        "mu_0.20": 0.8788286621187946,
+        "mu_0.30": 1.0611461787800949
+      },
+      "a45": {
+        "mu_0.00": 0.9999999999999999,
+        "mu_0.10": 1.222222222222222,
+        "mu_0.20": 1.4999999999999998,
+        "mu_0.30": 1.8571428571428568
+      }
     },
-    "mu_0.30": {
-      "W_insertion_N": 3.899712207016849,
-      "W_retention_N": 6.824999999999999
+    "forces_N": {
+      "mu_0.00": {
+        "W_insertion_N": 2.121762239271875,
+        "W_retention_N": 3.6750000000000003
+      },
+      "mu_0.10": {
+        "W_insertion_N": 2.641785814379191,
+        "W_retention_N": 4.491666666666667
+      },
+      "mu_0.20": {
+        "W_insertion_N": 3.2296953332865708,
+        "W_retention_N": 5.5125
+      },
+      "mu_0.30": {
+        "W_insertion_N": 3.8997122070168495,
+        "W_retention_N": 6.825
+      }
     }
+  },
+  "stage3": {
+    "tooth": {
+      "stations_mm": [
+        5.960769515458674,
+        6.560769515458674,
+        6.960769515458674,
+        8.0
+      ],
+      "crest_length_mm": 0.4,
+      "protrusion_mm": 0.6,
+      "stiffening_factor": 1.0106184084562528
+    },
+    "face_stations_mm": {
+      "retention": 6.260769515458674,
+      "lead_in": 7.480384757729337,
+      "crest": 6.760769515458674
+    },
+    "rotation_at_release_deg": {
+      "lead_in": 7.78382083507555,
+      "retention": 7.266122645146602
+    },
+    "effective_angles_deg": {
+      "lead_in": 37.78382083507555,
+      "retention": 37.7338773548534
+    },
+    "retention_angle_to_draw_deg": 52.2661226451466,
+    "cycle": {
+      "mu_0.00": {
+        "mu": 0.0,
+        "insertion": {
+          "station_mm": 7.480384757729337,
+          "P_release_N": 5.209571315698527,
+          "angle_drawn_deg": 30.0,
+          "angle_effective_deg": 37.78382083507555,
+          "force_drawn_N": 3.0077474014810974,
+          "force_rotated_N": 4.038602053870973,
+          "force_rotated_bracket_N": [
+            3.704254671064834,
+            4.444624962701186
+          ]
+        },
+        "retention": {
+          "station_mm": 6.260769515458674,
+          "P_release_N": 6.768329557160803,
+          "angle_drawn_deg": 45.0,
+          "angle_effective_deg": 37.7338773548534,
+          "force_drawn_N": 6.768329557160802,
+          "force_rotated_N": 5.237554962556121,
+          "force_rotated_bracket_N": [
+            4.852604495675155,
+            5.685065606978148
+          ]
+        },
+        "asymmetry_drawn": 2.250298530331334,
+        "asymmetry_rotated": 1.2968732478942708
+      },
+      "mu_0.10": {
+        "mu": 0.1,
+        "insertion": {
+          "station_mm": 7.480384757729337,
+          "P_release_N": 5.209571315698527,
+          "angle_drawn_deg": 30.0,
+          "angle_effective_deg": 37.78382083507555,
+          "force_drawn_N": 3.7449174423970355,
+          "force_rotated_N": 4.9427333852290065,
+          "force_rotated_bracket_N": [
+            4.532593834579953,
+            5.440879284698631
+          ]
+        },
+        "retention": {
+          "station_mm": 6.260769515458674,
+          "P_release_N": 6.768329557160803,
+          "angle_drawn_deg": 45.0,
+          "angle_effective_deg": 37.7338773548534,
+          "force_drawn_N": 8.272402792085426,
+          "force_rotated_N": 6.410449482915383,
+          "force_rotated_bracket_N": [
+            5.940243851913926,
+            6.957035620391614
+          ]
+        },
+        "asymmetry_drawn": 2.2089679997833147,
+        "asymmetry_rotated": 1.296944217560376
+      },
+      "mu_0.20": {
+        "mu": 0.2,
+        "insertion": {
+          "station_mm": 7.480384757729337,
+          "P_release_N": 5.209571315698527,
+          "angle_drawn_deg": 30.0,
+          "angle_effective_deg": 37.78382083507555,
+          "force_drawn_N": 4.578320589587785,
+          "force_rotated_N": 6.012768866030488,
+          "force_rotated_bracket_N": [
+            5.514199763623824,
+            6.618373224352708
+          ]
+        },
+        "retention": {
+          "station_mm": 6.260769515458674,
+          "P_release_N": 6.768329557160803,
+          "angle_drawn_deg": 45.0,
+          "angle_effective_deg": 37.7338773548534,
+          "force_drawn_N": 10.152494335741203,
+          "force_rotated_N": 7.798106958828675,
+          "force_rotated_bracket_N": [
+            7.225825988072045,
+            8.463418021616498
+          ]
+        },
+        "asymmetry_drawn": 2.217514946163981,
+        "asymmetry_rotated": 1.2969244507109805
+      },
+      "mu_0.30": {
+        "mu": 0.3,
+        "insertion": {
+          "station_mm": 7.480384757729337,
+          "P_release_N": 5.209571315698527,
+          "angle_drawn_deg": 30.0,
+          "angle_effective_deg": 37.78382083507555,
+          "force_drawn_N": 5.528116694735884,
+          "force_rotated_N": 7.298985314485536,
+          "force_rotated_bracket_N": [
+            6.695947250203867,
+            8.031512502509965
+          ]
+        },
+        "retention": {
+          "station_mm": 6.260769515458674,
+          "P_release_N": 6.768329557160803,
+          "angle_drawn_deg": 45.0,
+          "angle_effective_deg": 37.7338773548534,
+          "force_drawn_N": 12.56975489187006,
+          "force_rotated_N": 9.465458261953637,
+          "force_rotated_bracket_N": [
+            8.768796560515309,
+            10.27558996150111
+          ]
+        },
+        "asymmetry_drawn": 2.273786098589332,
+        "asymmetry_rotated": 1.2968183732564207
+      }
+    },
+    "tpa_clearance_criterion_mm": 0.6
   }
 }

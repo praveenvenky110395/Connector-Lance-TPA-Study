@@ -35,10 +35,11 @@ Second argument is the core count. Every deck is small — 1200 to 2064
 elements — and finishes in a couple of minutes. `insert_mu020` is the long
 one: 31 ms of simulated time against 5.5 ms for the rest.
 
-A note on output size. `spcforc` is written every 1 microsecond, which is
-about 15 MB per extraction run and 45 MB for the insertion one. That is
-deliberate and it is the fix for the first set of runs — see below. Delete the
-run folders once the results are extracted; nothing downstream needs them.
+A note on output size. `spcforc` is written every 0.5 microseconds, which is
+about 30 MB per extraction run and 90 MB for the insertion one. That is
+deliberate and it is half the fix for the first set of runs — see below. Keep
+the run folders until the post-processor's section 0 comes back clean; after
+that nothing downstream needs them.
 
 ## Then
 
@@ -51,12 +52,18 @@ The first walks the folders, reads `spcforc`, `nodout` and `glstat` from each,
 and writes `results/stage3_results.csv` plus the curve history. The second
 compares them against the closed form and draws `results/figures/`.
 
-**Read section 0 of the post-processor first.** It says whether the force
-output is usable at all, and it can say no. If it reports fewer than 8 samples
-per cycle on runs whose ripple is more than a few percent, the contact is
-ringing faster than 1 MHz can capture: halve `force` in
-`make_stage3_models.py`, regenerate, and rerun. The displacement results do not
-depend on this and stand either way.
+**Read section 0 of the post-processor first.** It says whether each run's
+force columns may be quoted, against three gates:
+
+| Gate | Threshold | If it fires |
+|---|---|---|
+| samples per cycle of the ring | ≥ 8, where the ripple is over 5 % of the level | halve `force` in `make_stage3_models.py` and rerun that deck |
+| movement across averaging windows of 50–400 µs | ≤ 1.5° | no rerun helps; the estimator is at its limit for that run |
+| force route against shape route, worst station | ≤ 1.5° | same |
+
+Only the first gate is fixed by running again. The other two are properties of
+how noisy that particular run's contact force is, and a run that fails them
+still reports its displacement results, which do not touch the force output.
 
 Pass the extractor whatever folder actually holds the runs — if the decks were
 copied somewhere else, give it that path instead.
@@ -109,11 +116,22 @@ run and 16 kHz in the same model run at half the loading rate, which no real
 structural mode can do — only an alias changes frequency when you change the
 sample rate.
 
-So forces are now written at 1 MHz and displacements stay at the old rate,
+So forces are now written at 2 MHz and displacements stay at the old rate,
 because a displacement is the double integral of the acceleration and the ring
 is already small in it. That is also why the first set's rotation measurement
 survived intact while its forces did not.
 
-The extractor now checks this on every run and refuses to quote a force that
-fails it. The check is the lesson, not the sample rate: the failure was silent,
-so something has to look for it.
+**Resolving the ring turned out to be necessary and not sufficient.** At
+0.5 µs the ring resolves at 12 to 19 samples per cycle and the answer still
+moved several degrees with the filter. The ripple is 55 to 72 % of the force's
+own level, and W and P are two projections of the same noisy contact impulse,
+so their ratio *at an instant* scatters by degrees however it is filtered.
+
+Stage 2 had already settled this and its rule is the one that applies: take
+the ratio of the MEANS over a window, not the mean of a ratio, and not a
+point. Applied at stations through the stroke, each compared against the
+rotation over the same window, the two routes agree to under 1 degree the
+whole way down the sweep.
+
+Three gates now guard it, and the lesson is the gates rather than any one
+number: this failed silently three times, so something has to look for it.
