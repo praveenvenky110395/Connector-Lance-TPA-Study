@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Version | 1.0 |
-| Status | Inputs frozen. All three stages evaluated. Stage 3 force results quoted for five of eight runs; see Section 6 |
+| Status | Inputs frozen. All three stages evaluated. Stage 3 force results quoted for five of the eight contact runs; see Section 6 |
 | Unit system | mm – tonne – s – N – MPa |
 | Computed by | `scripts/analytical.py` (nothing in this document is hand-entered) |
 
@@ -281,7 +281,7 @@ checked rather than assumed.
 
 | Hypothesis | Test | Result |
 |---|---|---|
-| Shear locking in the fully integrated element | ELFORM −1, 1, 2 on a common mesh | 0.55 % spread across all three — not the element formulation |
+| Shear locking in the fully integrated element | ELFORM −1, 1, 2 on a common mesh | 0.75 % spread across all three — not the element formulation |
 | Over-constrained root clamp | lateral DOF released on the root face, one node held to prevent drift | no measurable change — not the root |
 
 **Ramp, termination and curve end are three separate times.** The smooth-step ramp
@@ -331,13 +331,13 @@ The coarsest mesh is **excluded from the extrapolation** — one element through
 thickness is nowhere near the asymptotic range and would corrupt the fit. It is kept as
 the coarse anchor of the convergence curve and as a smoke test: at 30 elements it runs
 in seconds and confirms the deck is valid before the larger runs are committed to.
-- Equilibrium: `SPCFORC` at the root must equal `BNDOUT` at the tip.
+- Equilibrium cross-check: `SPCFORC` was checked against `BNDOUT` for the available Stage 3 output. The signals did not provide an equivalent reaction quantity in the current output setup, so this cross-check is not used as a verification criterion.
 
 **No housing block in Stage 1.** Its local compliance would soften the response and
 produce a discrepancy that is real physics rather than error.
 
 **Do not cross the matrix:** mesh convergence on one formulation, formulation comparison
-at one common mesh. Eight runs, not twenty.
+at one common mesh. Six runs, not twelve.
 
 ### Stage 2 — Contact mechanics
 
@@ -446,10 +446,11 @@ case has a median deviation within 0.2 % and no window in any case exceeds 0.93 
 ms is simply the fastest part of the quintic stroke with the force already past half its
 final value. Both readings are reported.
 
-**Also extracted:** sliding interface energy against internal energy (`SLNTEN = 2`);
-`RCFORC` against `SPCFORC`, which is the same force seen from two sides and must agree in x
-and z; and the tip deflection reached. Two of those needed correcting once the first run was
-read, and both corrections are to the criterion, not to the model:
+**Also extracted:** sliding interface energy against internal energy (`SLNTEN = 2`) and
+the tip deflection reached. A planned `RCFORC`–`SPCFORC` cross-check was not used as a
+verification criterion because it was not included in the scripted extraction. Two criteria
+needed correcting once the first run was read, and both corrections are to the criterion,
+not to the model:
 
 - The 5 % screen on sliding interface energy only holds for the frictionless runs. There the
   counter contains nothing but penalty energy — the α = 45°, µ = 0 run gives 1.90 % — so it
@@ -507,7 +508,8 @@ The third is the finding. Lead-in 30° → 37.8° effective (steeper); retention
 (shallower). They converge. The insertion-to-retention asymmetry falls from about 2.2 on
 the drawn angles to **1.30**, and it is 1.30 at every friction coefficient, because the
 correction is geometric rather than frictional. **Design recommendation: draw the retention
-face at 52.3° to end up with an effective 45°.**
+face at 52.3° to end up with an effective 45°** — 52.7° on the rotation the runs measured
+(Section 6).
 
 Each force is reported as a bracket, not a number: the contact is face to face and the
 resultant migrates as the faces slide apart. Retention at µ = 0.20 is 7.23 to 8.46 N. The
@@ -704,18 +706,18 @@ about the load at which a real PBT-GF30 lance would fail.
 | Deflected shape | Stage 1 | quarter-point deflections match the closed form |
 | Mesh convergence | Stage 1 | force stable with refinement |
 | Element formulation | Stage 1 | ELFORM −1 on target; ELFORM 2 stiffens |
-| Equilibrium | Stages 1–3 | `SPCFORC` = `BNDOUT` |
+| Equilibrium | Stages 1–3 | Available output checked; not used as verification criterion |
 | Wedge relation | Stage 2 | W/P within ±2 % of (tan α + µ)/(1 − µ tan α), read while sliding |
 | Contact formulation | Stage 2 | µ = 0: W/P = tan α, pure geometry |
 | **Stage 1 regression** | Stage 2 | **µ = 0, β = 45° gives W/P = 1.000** |
 | Sliding interface energy | Stage 2, µ = 0 | < 5 % of internal — penalty energy only |
 | Frictional work | Stage 2, µ > 0 | sliding energy matches ½ µ N s / cos α |
 | Energy balance | Stage 2 | total / initial energy within ±1 % |
-| Contact vs constraint forces | Stage 2 | `RCFORC` = `SPCFORC` in x and z |
+| Contact vs constraint forces | Stage 2 | Not performed / not used as verification criterion |
 | Kinetic / internal energy | all explicit | small — quasi-static confirmed |
 | Hourglass / internal energy | all explicit | < 10 % |
 | Total energy | all explicit | flat — no contact energy injection |
-| Contact-region mesh | Stage 2 | force not a mesh artefact |
+| Contact-region mesh | Stage 2 | Not performed |
 | **Limiting case** | Stage 3 | `lance_only` reproduces Stage 1 plus the 1.1 % the tooth adds |
 | Frictionless geometry | Stage 3 | W/P at µ = 0 returns tan of the *effective* angle |
 | Retention and insertion | Stage 3 | inside the Stage 1 × Stage 2 bracket |

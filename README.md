@@ -146,7 +146,7 @@ Element formulation on the common mesh (n4):
 stiffest — the ordering element theory predicts, and small enough that the formulation
 choice is not driving the result.
 
-**Solution quality.** Kinetic over internal energy peaks at 0.007 % during the ramp.
+**Solution quality.** Kinetic over internal energy peaks at 0.008 % during the ramp.
 Hourglass energy on ELFORM 1 is 0.069 % of internal, against a 10 % screening criterion.
 Reaction force drifts by at most 0.03 % across the hold, so the response has settled.
 
@@ -257,7 +257,7 @@ wrong and no other number in the stage is safe.
 | a45_mu020 | 45° | 0.20 | 3.9279 | 2.6246 | 1.4966 | 1.5000 | −0.23 % |
 
 Worst deviation across the six, **+0.41 %**, against a ±2 % band. KE/IE at most 1.01 %,
-energy ratio 1.00000 on every run.
+energy ratio 0.99999 to 1.00000.
 
 Getting there required finding out that the first measurement window was the wrong one, and
 the way it was found is more useful than the numbers.
@@ -292,8 +292,10 @@ is moving.
 
 Two other things in the data agree. Tip deflection falls as µ rises — 0.6014, 0.6008, 0.6000,
 0.5990 mm — because friction drags the tip back along −x so it rides higher on the inclined
-face. And the ratio scatter collapses when friction is switched on, 7.3 % to 1.1 % at 45°,
-because friction damps the axial mode that was making the frictionless ratio noisy.
+face. And in the hold, the ratio scatter at 45° drops from 7.3 % without friction to 1.1 %
+with it — the stuck contact pins the tip against the axial ringing that makes the
+frictionless ratio noisy, which is the same stick that biases the hold reading. While the
+plate is moving the scatter stays between 5.8 and 7.3 % with or without friction.
 
 Extraction is scripted rather than clicked: [`scripts/extract_stage2.py`](scripts/extract_stage2.py) reads `spcforc`,
 `nodout` and `glstat` out of the six run folders and writes [`results/stage2_results.csv`](results/stage2_results.csv) plus
