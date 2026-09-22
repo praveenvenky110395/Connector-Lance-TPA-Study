@@ -16,6 +16,10 @@ and a friction sweep to µ = 0.30. Stage 3 predicted, from those two stages alon
 before any deck was written, that the lance's rotation would collapse the designed
 30°/45° asymmetry — and then measured the rotation behind it on both faces.
 
+![The 45° retention face and the 30° lead-in turning towards the same angle as the lance lifts](results/figures/stage3_faces_meet.gif)
+
+*Both runs, matched by lift, from the committed CSVs. Made by [`scripts/animate_stage3.py`](scripts/animate_stage3.py).*
+
 ---
 
 ## The engineering question
@@ -333,6 +337,10 @@ tip, protruding 0.60 mm. **The protrusion is the lift needed to release**, which
 design relation the whole feature rests on. A rigid terminal runs underneath with a
 matching shoulder; a rigid TPA sits above with a clearance.
 
+![Push-in and pull-out of the locking cycle, LS-DYNA](results/figures/stage3_locking_cycle.gif)
+
+*`insert_mu020` then `extract_mu020` — two separate runs, mapped to the same view and scale.*
+
 Nothing new is assumed. The prediction is the product of the two stages already verified:
 
 | | from |
@@ -549,6 +557,10 @@ still the beam Stage 1 verified.
 0.757 mm limit. `extract_tpa_g085` matched `extract_mu020` in every column printed — a
 contact defined but never reached cost exactly nothing.
 
+![The TPA at 0.10 mm blocks the lance, at 0.85 mm it does not](results/figures/stage3_tpa_comparison.gif)
+
+*The same pull-out with the TPA at 0.10 mm and at 0.85 mm, same view and scale.*
+
 ### The force side took three attempts and two of them were my error
 
 **At 10 µs the force history was aliased.** The contact rings above 100 kHz. Nothing in
@@ -716,7 +728,8 @@ This work is **verified, not validated**. Validation requires measurement.
 │   ├── postprocess_stage2.py    W/P against the wedge relation, friction figure
 │   ├── make_stage3_models.py    writes the nine Stage 3 decks, one folder each
 │   ├── extract_stage3.py        reads the run folders, fills the Stage 3 CSVs
-│   └── postprocess_stage3.py    gates, effective angle, TPA, sensitivity, figure
+│   ├── postprocess_stage3.py    gates, effective angle, TPA, sensitivity, figure
+│   └── animate_stage3.py        the two faces meeting, as a GIF from the CSVs
 ├── ls-dyna/
 │   ├── stage1/                  four mesh levels, two extra formulations
 │   ├── stage2/                  two ramp angles, friction sweep
