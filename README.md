@@ -6,15 +6,15 @@ before the next one is introduced**.
 
 **Status: all three stages complete.** Stage 3 confirms, from displacement measurements
 alone, that the lance's own rotation brings a 45° retention face and a 30° lead-in to the
-same 37.3° effective angle — 0.13° of spread across six runs, 1.2 % from a value written
-before the models were built. Getting a usable *force* measurement out of the same runs
-took three output rates and two corrections to the estimator, written up under
+same 37.3° effective angle — 0.13° of spread across six runs, 1.2 % from the closed-form
+value, which takes no FE result as input. Getting a usable *force* measurement out of the
+same runs took three output rates and two corrections to the estimator, written up under
 [Stage 3 results](#stage-3-results).
 
 Stage 2 matches the closed-form wedge relation to within 0.41 % across both ramp angles
-and a friction sweep to µ = 0.30. Stage 3 predicted, from those two stages alone and
-before any deck was written, that the lance's rotation would collapse the designed
-30°/45° asymmetry — and then measured the rotation behind it on both faces.
+and a friction sweep to µ = 0.30. Stage 3's prediction comes from those two stages alone —
+no Stage 3 measurement enters it — and it says that the lance's rotation would collapse the
+designed 30°/45° asymmetry. The rotation behind it is then measured on both faces.
 
 ![The 45° retention face and the 30° lead-in turning towards the same angle as the lance lifts](results/figures/stage3_faces_meet.gif)
 
@@ -53,8 +53,10 @@ order. It is also where the idealisations start to cost something, and Stage 3's
 say how much — the tooth stiffens the lance, the load moves off the tip, and the inclined
 faces now sit on a part that rotates.
 
-The analytical reference is committed **before any FE model is built**, so the expected
-values are a prediction rather than a description of results already obtained. The closed
+The analytical reference takes **no FE result as input**, so the expected values are a
+prediction rather than a description of results already obtained. For Stages 1 and 2 it was
+also committed before the models were run; for Stage 3 it went into the repository together
+with the results, and the note under [Stage 3 results](#stage-3-results) says so. The closed
 form is not a solver and cannot share a solver's mistakes. A second FE code was considered
 and deliberately left out: it would have cost days of unfamiliar tooling to give a second
 opinion on a question the analytical solution already answers.
@@ -348,8 +350,8 @@ Nothing new is assumed. The prediction is the product of the two stages already 
 | how hard the lance is to lift | Stage 1, now on a variable section |
 | what the face angle does to the force | Stage 2, W/P = (tan β + µ)/(1 − µ tan β) |
 
-Three things change on the way from the idealisation to the part, and all three were named
-in [`analytical.py`](scripts/analytical.py) before anything was run. The tooth stiffens the lance by 1.1 %. The load
+Three things change on the way from the idealisation to the part, and all three are handled
+in [`analytical.py`](scripts/analytical.py) without using an FE result. The tooth stiffens the lance by 1.1 %. The load
 sits on a tooth face rather than at the tip, so the lever arm is shorter and the release
 condition belongs at the crest. And the inclined faces are on the lance, which rotates.
 
@@ -522,7 +524,7 @@ be read at all, and how.
 ### The finding, from displacements alone
 
 The effective face angle at release, measured from two spine nodes either side of the
-retention face, against a value written into [`analytical.py`](scripts/analytical.py) before any deck existed:
+retention face, against the closed-form value from [`analytical.py`](scripts/analytical.py), which takes no FE input:
 
 | run | drawn face | rotation at release | effective face | predicted |
 |---|---|---|---|---|
@@ -538,6 +540,12 @@ the other steepening by 7.35°, converge on the same effective angle — which i
 Stage 3 finding, and it is visible here as a measurement rather than a prediction. The
 spread across all six runs is **0.13°**; the offset from the prediction is 0.4 to 0.5°,
 about 1.2 %.
+
+**On the order of the work.** Stage 1's analytical reference was committed on 14 September
+and its FE results on 17 September. Stage 3's analytical functions and its results were
+pushed in one commit on 21 September, so the repository does not show which of the two came
+first. What it does show is that the prediction uses no FE result, and that
+[`make_stage3_models.py`](scripts/make_stage3_models.py) imports those functions — it cannot write a deck without them.
 
 That is the error on the angle. The rotation itself is further out: 7.67–7.78° at the
 retention face against 7.27° from the closed form, 6 % high, and 7.35° at the lead-in
@@ -603,7 +611,7 @@ Its stroke is 0.12 mm, so the contact loads slowly and the lance barely rings �
 0.8 % against 55–72 % everywhere else — and it never rotates past a degree. An almost
 unrotated 45° face has to read 45°. It reads **44.2–44.7°, with the two routes agreeing to
 0.08° at every station**. That is the one run in the set whose answer was known in advance,
-and it validates the estimator rather than the finding.
+and it verifies the estimator rather than the finding.
 
 **`insert_mu020` misses two gates narrowly and stays withheld.** Placing the stations by
 lift took it from 21.6° to 1.67° worst and 0.77° mean; four of its five stations are
