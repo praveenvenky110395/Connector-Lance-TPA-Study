@@ -16,9 +16,24 @@ and a friction sweep to µ = 0.30. Stage 3's prediction comes from those two sta
 no Stage 3 measurement enters it — and it says that the lance's rotation would collapse the
 designed 30°/45° asymmetry. The rotation behind it is then measured on both faces.
 
+## The study in three pictures
+
+**1 · The finding.** As the lance lifts, its own rotation brings the 45° retention face and
+the 30° lead-in to the same 37.3°. Drawn from the committed CSVs by
+[`scripts/animate_stage3.py`](scripts/animate_stage3.py).
+
 ![The 45° retention face and the 30° lead-in turning towards the same angle as the lance lifts](results/figures/stage3_faces_meet.gif)
 
-*Both runs, matched by lift, from the committed CSVs. Made by [`scripts/animate_stage3.py`](scripts/animate_stage3.py).*
+**2 · How the lock works.** Push-in, then pull-out: the terminal rides up the 30° lead-in,
+the lance snaps into the recess, and the 45° retention face then loads the lance until it
+releases. LS-DYNA, `insert_mu020` and `extract_mu020`.
+
+![Push-in and pull-out of the locking cycle, LS-DYNA](results/figures/stage3_locking_cycle.gif)
+
+**3 · What the secondary lock does.** The same pull-out with the TPA at 0.10 mm and at
+0.85 mm of clearance: blocked, and not blocked.
+
+![The TPA at 0.10 mm blocks the lance, at 0.85 mm it does not](results/figures/stage3_tpa_comparison.gif)
 
 ## Results at a glance
 
@@ -32,7 +47,7 @@ designed 30°/45° asymmetry. The rotation behind it is then measured on both fa
 | **Stage 3 · TPA** | blocked at 0.10 mm clearance, released at 0.85 mm — the limit is **0.757 mm**, not the 0.600 mm protrusion |
 | **Status** | verified, not validated: a linear-elastic solver-verification model |
 
-**Contents:** [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
+**Contents:** [The study in three pictures](#the-study-in-three-pictures) · [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
 
 ---
 
@@ -562,6 +577,10 @@ the other steepening by 7.35°, converge on the same effective angle — which i
 Stage 3 finding, and it is visible here as a measurement rather than a prediction. The
 spread across all six runs is **0.13°**; the offset from the prediction is 0.4 to 0.5°,
 about 1.2 %.
+
+![The two faces meeting, from the same runs as the table above](results/figures/stage3_faces_meet.gif)
+
+*The two runs of the table, matched by lift.*
 
 **On the order of the work.** Stage 1's analytical reference was committed on 14 September
 and its FE results on 17 September. Stage 3's analytical functions and its results were
