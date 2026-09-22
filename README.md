@@ -20,6 +20,20 @@ designed 30°/45° asymmetry. The rotation behind it is then measured on both fa
 
 *Both runs, matched by lift, from the committed CSVs. Made by [`scripts/animate_stage3.py`](scripts/animate_stage3.py).*
 
+## Results at a glance
+
+| | |
+|---|---|
+| **Stage 1 · bending** | 3.7809 N at the finest mesh, **+3.71 %** from the Timoshenko reference of 3.6455 N |
+| **Stage 1 · numerics** | formulation spread 0.75 %, discretisation uncertainty ~ 0.55 % (GCI, assumed p = 1) |
+| **Stage 2 · contact** | worst deviation from the wedge relation **+0.41 %** across six runs (30° and 45°, µ = 0 to 0.30) |
+| **Stage 3 · the finding** | a 45° face and a 30° face both end at **37.3°** effective, 0.13° of spread across six runs |
+| **Stage 3 · design** | draw the retention face at **52.3°** to end up with an effective 45° (52.7° on the measured rotation) |
+| **Stage 3 · TPA** | blocked at 0.10 mm clearance, released at 0.85 mm — the limit is **0.757 mm**, not the 0.600 mm protrusion |
+| **Status** | verified, not validated: a linear-elastic solver-verification model |
+
+**Contents:** [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
+
 ---
 
 ## The engineering question
@@ -45,7 +59,7 @@ something independent before the next is added.
 |---|---|---|
 | **1 · Structural verification** | bending only, no contact | closed-form cantilever solution |
 | **2 · Contact mechanics** | contact and friction | wedge relation, checked on W/P — a ratio with no stiffness in it |
-| **3 · Functional retention** | the locking tooth, the terminal and the TPA | Stage 1 × Stage 2 — the lance stiffness times the wedge relation, predicted before the runs |
+| **3 · Functional retention** | the locking tooth, the terminal and the TPA | Stage 1 × Stage 2 — the lance stiffness times the wedge relation, with no Stage 3 measurement in it |
 
 Stage 3 has no closed form of its own, and does not need one: its prediction is the
 product of the two stages already verified. That is the whole reason for building in this
@@ -56,10 +70,11 @@ faces now sit on a part that rotates.
 The analytical reference takes **no FE result as input**, so the expected values are a
 prediction rather than a description of results already obtained. For Stages 1 and 2 it was
 also committed before the models were run; for Stage 3 it went into the repository together
-with the results, and the note under [Stage 3 results](#stage-3-results) says so. The closed
-form is not a solver and cannot share a solver's mistakes. A second FE code was considered
-and deliberately left out: it would have cost days of unfamiliar tooling to give a second
-opinion on a question the analytical solution already answers.
+with the results, and the note under [Stage 3 results](#stage-3-results) says so.
+
+The closed form is not a solver and cannot share a solver's mistakes. A second FE code was
+considered and deliberately left out: it would have cost days of unfamiliar tooling to give
+a second opinion on a question the analytical solution already answers.
 
 ---
 
@@ -289,10 +304,11 @@ tangential force to relax, which is why exactly those two runs were unaffected.
 The test was stated before the data was looked at: read while the plate is moving, the
 friction runs should sit on the closed form and the µ-trend should disappear; if they stayed
 2 % low in every window, the friction model itself was wrong and the hold number would stand.
-They sit on the closed form. Over all 35 windows between 0.8 and 1.5 ms long inside 2.2–4.2 ms,
-every case has a median deviation within 0.2 % and no single window anywhere exceeds 0.93 %,
-so the answer does not depend on where in the stroke it is read — only on whether the plate
-is moving.
+
+They sit on the closed form. Over all 35 windows between 0.8 and 1.5 ms long inside 2.2–4.2
+ms, every case has a median deviation within 0.2 % and no single window anywhere exceeds
+0.93 %, so the answer does not depend on where in the stroke it is read — only on whether
+the plate is moving.
 
 ![W/P through the stroke](results/figures/stage2_ratio_history.png)
 
@@ -307,20 +323,22 @@ Extraction is scripted rather than clicked: [`scripts/extract_stage2.py`](script
 `nodout` and `glstat` out of the six run folders and writes [`results/stage2_results.csv`](results/stage2_results.csv) plus
 the full reaction history. `spcforc` already closes each output block with a `force
 resultants` line — the x, y, z sum over the 35 root nodes — so W and P are read from the file
-rather than summed by hand. The script was written against the 45° frictionless run and
-reproduces the numbers taken manually from LS-PrePost, 3.7302 N and 3.7329 N, to four
-figures. Having the history in a file rather than in a GUI is what made the window question
-answerable at all.
+rather than summed by hand.
+
+The script was written against the 45° frictionless run and reproduces the numbers taken
+manually from LS-PrePost, 3.7302 N and 3.7329 N, to four figures. Having the history in a
+file rather than in a GUI is what made the window question answerable at all.
 
 Reading the first run also corrected two acceptance criteria, both written for a Stage 1
 without contact. The 5 % screen on sliding interface energy only means something with µ = 0,
 where the counter holds penalty energy alone (1.90 % here); with friction on it also collects
 real frictional work, which at 30° and µ = 0.3 is near 80 % of the internal energy. Those
 cases are compared against the closed-form friction work instead, and the screen that holds
-for every case is the energy balance, ±1 %. KE/IE is likewise read over the second half of
-the ramp only — earlier the lance holds almost no internal energy and the ratio is set by its
-denominator, reading 7.3 % at 1.02 ms and 0.32 % at 2.51 ms on the same run while the kinetic
-energy is still rising.
+for every case is the energy balance, ±1 %.
+
+KE/IE is likewise read over the second half of the ramp only — earlier the lance holds
+almost no internal energy and the ratio is set by its denominator, reading 7.3 % at 1.02 ms
+and 0.32 % at 2.51 ms on the same run while the kinetic energy is still rising.
 
 All three changes are to how the result is measured and judged. Nothing in the model was
 altered to meet a criterion, and both the hold and the sliding numbers are reported.
@@ -433,10 +451,11 @@ nothing drove the lance.
 A nodal rigid body occupies a part ID like any other part. The audit before delivery had
 compared keyword counts against the Stage 1 and Stage 2 decks and found them consistent —
 and they were. Every keyword was right and every card had the right fields. What was wrong
-was what the IDs on those cards pointed at, which card counting cannot see. The generator
-now reads the finished deck text back and refuses to write it if two part IDs collide, if
-prescribed motion lands on the deformable part or on an undefined curve, or if a contact
-names a part that does not exist.
+was what the IDs on those cards pointed at, which card counting cannot see.
+
+The generator now reads the finished deck text back and refuses to write it if two part IDs
+collide, if prescribed motion lands on the deformable part or on an undefined curve, or if a
+contact names a part that does not exist.
 
 **Then it happened a second time, the same shape.** `extract_mu020` ran to termination with
 the terminal exactly where it started. `*MAT_RIGID`'s CON1 field is a code, not a bitmask —
@@ -455,9 +474,10 @@ terminated at 10.1 ms of a 20 ms ramp on excessive element distortion, with the 
 crushed locally. `*CONTACT_AUTOMATIC_ONE_WAY_SURFACE_TO_SURFACE` checks slave **nodes**
 against master **segments**, and nothing else. The terminal's leading edge is a sharp rigid
 corner that travels the entire length of the tooth — and a master corner can sit inside a
-slave element face, between its nodes, completely undetected. It had been gouging since
-about 4 ms; the run only stopped once an element finally inverted, by which time the corner
-was past the crest and under the retention face.
+slave element face, between its nodes, completely undetected.
+
+It had been gouging since about 4 ms; the run only stopped once an element finally inverted,
+by which time the corner was past the crest and under the retention face.
 
 Unlike the first two, this one is a real modelling decision rather than a typo, and the fix
 is four things:
@@ -487,19 +507,21 @@ ploughs on. The blocked run had been driven 0.90 mm against a stop the lance rea
 
 That is the same objection that killed the very first Stage 3 plan, reappearing in a
 different form. A prescribed displacement through a blocked path delivers unbounded force
-just as a prescribed force through a blocked path delivers unbounded travel. A blocked run
-is now driven to the stop plus 0.05 mm and no further. The overrun is not padding: it is
-where the force rises steeply and the load path moves out of the lance's bending and into
-the TPA, which is the thing the stage set out to measure. Past it the linear-elastic lance
-has fractured and the model is describing a part that no longer exists.
+just as a prescribed force through a blocked path delivers unbounded travel.
+
+A blocked run is now driven to the stop plus 0.05 mm and no further. The overrun is not
+padding: it is where the force rises steeply and the load path moves out of the lance's
+bending and into the TPA, which is the thing the stage set out to measure. Past it the
+linear-elastic lance has fractured and the model is describing a part that no longer exists.
 
 **And the FE model corrected the design criterion.** The control run was meant to be a TPA
 fitted and useless — 0.65 mm of clearance against a 0.60 mm tooth protrusion, so the lance
 should release with the TPA in place. It blocked. The one-line criterion *clearance <
 protrusion* compares the clearance against how far the **tooth** must move, and ignores
-that the TPA sits somewhere else on a beam that bends. Under the extraction load the lance
-tip lifts **1.26 times** the crest, so a TPA reaching the tip stops the lance at 0.757 mm
-of clearance, not 0.600.
+that the TPA sits somewhere else on a beam that bends.
+
+Under the extraction load the lance tip lifts **1.26 times** the crest, so a TPA reaching
+the tip stops the lance at 0.757 mm of clearance, not 0.600.
 
 | TPA reaches | blocks below |
 |---|---|
