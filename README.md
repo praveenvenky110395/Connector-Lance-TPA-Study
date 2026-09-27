@@ -16,7 +16,7 @@ and a friction sweep to µ = 0.30. Stage 3's prediction comes from those two sta
 no Stage 3 measurement enters it — and it says that the lance's rotation would collapse the
 designed 30°/45° asymmetry. The rotation behind it is then measured on both faces.
 
-## The study in three pictures
+## Stage 3 — Functional locking: three animations
 
 **1 · The finding.** As the lance lifts, its own rotation brings the 45° retention face and
 the 30° lead-in to the same 37.3°. Drawn from the committed CSVs by
