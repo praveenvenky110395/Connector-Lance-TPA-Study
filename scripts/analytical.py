@@ -1188,7 +1188,9 @@ def build_targets(g: Geometry, m: Material) -> dict:
             "retention_angle_to_draw_deg": retention_angle_for_effective(g, m),
             "cycle": {f"mu_{mu:.2f}": cycle_forces(g, m, mu)
                       for mu in (0.0, 0.1, 0.2, 0.3)},
-            "tpa_clearance_criterion_mm": g.y,
+            "tpa_clearance_criterion_mm": tpa_blocking_clearance(g, m, g.L),
+            "tpa_clearance_criterion_at": "lance tip (TPA covers to x = L)",
+            "tooth_protrusion_mm": g.y,
         },
     }
 
@@ -1323,8 +1325,9 @@ def main() -> None:
     print(f"\n    Design recommendation: draw the retention face at "
           f"{s3['retention_angle_to_draw_deg']:.1f} deg")
     print(f"    to end up with an effective {g.beta_deg:.0f} deg once the lance has")
-    print(f"    rotated. A TPA blocks release only while its clearance is below")
-    print(f"    the {s3['tpa_clearance_criterion_mm']:.2f} mm protrusion.")
+    print(f"    rotated. A TPA reaching the lance tip blocks release only while its")
+    print(f"    clearance is below {s3['tpa_clearance_criterion_mm']:.3f} mm - the tip lift at")
+    print(f"    release, not the {g.y:.2f} mm tooth protrusion.")
 
     print("\n" + "-" * 74)
     print("  MATERIAL MODEL - linear-elastic assumption")

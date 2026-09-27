@@ -244,6 +244,8 @@
         "asymmetry_rotated": 1.2968183732564207
       }
     },
-    "tpa_clearance_criterion_mm": 0.6
+    "tpa_clearance_criterion_mm": 0.75715643914445,
+    "tpa_clearance_criterion_at": "lance tip (TPA covers to x = L)",
+    "tooth_protrusion_mm": 0.6
   }
 }
