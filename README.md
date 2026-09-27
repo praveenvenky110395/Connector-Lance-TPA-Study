@@ -16,7 +16,10 @@ and a friction sweep to µ = 0.30. Stage 3's prediction comes from those two sta
 no Stage 3 measurement enters it — and it says that the lance's rotation would collapse the
 designed 30°/45° asymmetry. The rotation behind it is then measured on both faces.
 
-## Stage 3 — Functional locking: three animations
+## The locking mechanism in three animations
+
+*All three animations come from Stage 3, the full locking cycle. Stages 1 and 2 verify the
+bending and the contact first; they have no animations and are summarised in the table below.*
 
 **1 · The finding.** As the lance lifts, its own rotation brings the 45° retention face and
 the 30° lead-in to the same 37.3°. Drawn from the committed CSVs by
@@ -47,7 +50,7 @@ releases. LS-DYNA, `insert_mu020` and `extract_mu020`.
 | **Stage 3 · TPA** | blocked at 0.10 mm clearance, released at 0.85 mm — the limit is **0.757 mm**, not the 0.600 mm protrusion |
 | **Status** | verified, not validated: a linear-elastic solver-verification model |
 
-**Contents:** [Stage 3 — three animations](#stage-3--functional-locking-three-animations) · [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
+**Contents:** [The locking mechanism in three animations](#the-locking-mechanism-in-three-animations) · [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
 
 ---
 
