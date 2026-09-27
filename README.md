@@ -25,7 +25,7 @@ the 30° lead-in to the same 37.3°. Drawn from the committed CSVs by
 ![The 45° retention face and the 30° lead-in turning towards the same angle as the lance lifts](results/figures/stage3_faces_meet.gif)
 
 **2 · How the lock works.** Push-in, then pull-out: the terminal rides up the 30° lead-in,
-the lance snaps into the recess, and the 45° retention face then loads the lance until it
+the lance drops back into the recess, and the 45° retention face then loads the lance until it
 releases. LS-DYNA, `insert_mu020` and `extract_mu020`.
 
 ![Push-in and pull-out of the locking cycle, LS-DYNA](results/figures/stage3_locking_cycle.gif)
@@ -47,7 +47,7 @@ releases. LS-DYNA, `insert_mu020` and `extract_mu020`.
 | **Stage 3 · TPA** | blocked at 0.10 mm clearance, released at 0.85 mm — the limit is **0.757 mm**, not the 0.600 mm protrusion |
 | **Status** | verified, not validated: a linear-elastic solver-verification model |
 
-**Contents:** [The study in three pictures](#the-study-in-three-pictures) · [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
+**Contents:** [Stage 3 — three animations](#stage-3--functional-locking-three-animations) · [The engineering question](#the-engineering-question) · [Method](#method) · [Analytical targets](#analytical-targets) · [Stage 1 finding](#stage-1-finding-how-the-tip-deflection-is-applied) · [Stage 1 results](#stage-1-results) · [Stage 2](#stage-2-contact-and-why-the-check-is-a-ratio) · [Stage 3](#stage-3-the-locking-cycle) · [Stage 3 results](#stage-3-results) · [Geometry and material](#geometry-and-material) · [Principal limitation](#principal-limitation) · [Repository layout](#repository-layout) · [Related work](#related-work) · [Scope](#scope)
 
 ---
 
@@ -437,7 +437,7 @@ where the resultant is assumed to act.
 | `lance_only` | prescribed tip lift, nothing else. Must return the Stage 1 force plus the 1.06 % the tooth adds — the regression that says the tooth has not turned the beam into something else |
 | `extract_mu000` | terminal pulled out, frictionless. W/P is then pure geometry, so it measures the rotated angle directly |
 | `extract_mu020`, `extract_mu030` | retention force against friction |
-| `insert_mu020` | full insertion stroke — up the lead-in, along the crest, and the snap into the recess |
+| `insert_mu020` | full insertion stroke — up the lead-in, along the crest, and the return into the recess |
 | `extract_tpa_g010` | extraction with the TPA at 0.10 mm clearance. Blocked |
 | `extract_tpa_g085` | TPA at 0.85 mm, above the 0.757 mm blocking limit. **Not** blocked — and it is also the control, because a contact that is defined but never reached has to cost exactly nothing |
 | `extract_mu020_fine` | the baseline with the element over the tooth halved. A penalty contact transmits force by penetrating, and the penetration scales with the element |
