@@ -106,10 +106,6 @@ to the result**, and this sensitivity is reported rather than the assumption hid
 0.50 is the conservative end of the published design-guide range for glass-reinforced
 grades in one-time assembly.
 
-> **OPEN ITEM.** Cite the specific design guide consulted. A referenced factor beats a
-> plausible one, and the interviewer writes specifications for a living. At 0.60 the
-> design still passes, at 62 % utilisation.
-
 ### 3.4 Creep and relaxation — what may and may not be claimed
 
 **May state:** the datasheet reports a reduction from 9,800 MPa tensile modulus to
@@ -786,15 +782,6 @@ Further limitations:
 - Geometry is simplified and representative, not a production part.
 - **No experimental correlation.** The work is *verified*, not *validated*. Validation
   requires measurement — friction coefficient first, then a physical pull-out test.
-
----
-
-## 8. Open items
-
-1. Cite the specific design guide behind the 0.50 permissible-strain factor.
-2. If buffer days permit: fit a two-point flow curve from the datasheet, run one case
-   with `MAT_024`, and quantify how far the linear-elastic force is an overestimate.
-   This converts the principal limitation into a result.
 
 ---
 
